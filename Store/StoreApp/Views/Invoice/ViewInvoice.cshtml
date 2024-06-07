@@ -1,0 +1,50 @@
+﻿@model Invoice
+@using Newtonsoft.Json
+
+@{
+    var productDetails = JsonConvert.DeserializeObject<IEnumerable<dynamic>>(Model.ProductDetails);
+    var total = Model.TotalAmount;
+}
+
+<div class="row shadow my-3">
+    <div class="col-md-3 border-1 border-dark p-3 bg-light shadow">
+        <h5 class="display-5 text-center">
+            <i class="fa fa-address-book text-danger"></i>
+            <br />
+            @Model.Order?.Name
+        </h5>
+        <p>Adress: @Model.Order?.Line1</p>
+        <p>@Model.Order?.Line2</p>
+        <p>@Model.Order?.Line3</p>
+        <p>City: @Model.Order?.City</p>
+        <p>Order Date: @Model?.InvoiceDate.ToString("dd-MM-yyyy HH:mm")</p>
+        <p class="rounded-2 p-3">
+            @if (Model.Order.Shipped)
+            {
+                <span class="bg-warning p-2">Shipped</span>
+            }
+            <span class="bg-info p-2">@(Model.Order.Shipped ? "Completed" : "In Progress")</span>
+        </p>
+    </div>
+    <div class="col-md-9">
+        <h6 class="display-6 mt-3 text-center">
+            Invoice Details
+        </h6>
+        <ul class="list-group">
+            @foreach (var item in productDetails)
+            {
+                <li class="list-group-item d-flex justify-content-between brand">
+                    @item.ProductName
+                    <b>
+                        @item.Quantity * @item.UnitPrice.ToString("C2")
+                        = @item.TotalPrice.ToString("C2")
+                    </b>
+                </li>
+            }
+            <li class="list-group-item d-flex justify-content-between text-danger">
+                Total
+                <b>@total.ToString("C2")</b>
+            </li>
+        </ul>
+    </div>
+</div>
